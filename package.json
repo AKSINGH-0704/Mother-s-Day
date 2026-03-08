@@ -1,0 +1,9 @@
+{
+  "name": "surprise-creator",
+  "version": "1.0.0",
+  "description": "Beautiful personalized surprise creator with balloon pop reveals",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "license": "MIT"
+}
