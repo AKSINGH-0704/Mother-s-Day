@@ -42,6 +42,7 @@ module.exports = async function handler(req, res) {
       relationship: data.relationship || 'Mom',
       name: data.name ? data.name.trim() : '',
       finalMessage: data.finalMessage ? data.finalMessage.trim() : '',
+      audioUrl: typeof data.audioUrl === 'string' && data.audioUrl.startsWith('https://') ? data.audioUrl : null,
       balloons: validBlooms.map(b => ({
         message: b.message.trim(),
         imageUrl: typeof b.imageUrl === 'string' && b.imageUrl.startsWith('https://') ? b.imageUrl : null

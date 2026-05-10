@@ -791,3 +791,79 @@ body {
   gap: 1.5rem;
   width: 100%;
 }
+
+/* ================================================
+   AUDIO UPLOAD
+   ================================================ */
+.audio-section {
+  border-top: 1px solid rgba(192,132,151,0.15);
+  padding-top: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.audio-hint {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--textSecondary);
+  opacity: 0.75;
+  line-height: 1.5;
+}
+
+.audio-upload-area {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.audio-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.7rem 1.4rem;
+  border: 1px dashed rgba(192,132,151,0.5);
+  border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.4);
+  color: var(--primary);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.audio-upload-btn:hover {
+  background: rgba(192,132,151,0.08);
+  border-color: var(--primary);
+}
+
+.audio-selected-info {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: rgba(212,175,55,0.08);
+  border: 1px solid rgba(212,175,55,0.25);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 1rem;
+  flex: 1;
+}
+
+.audio-file-name {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--textPrimary);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.remove-audio-btn {
+  background: transparent;
+  border: none;
+  color: var(--textSecondary);
+  cursor: pointer;
+  font-size: 0.85rem;
+  opacity: 0.7;
+  white-space: nowrap;
+  padding: 0;
+}
+.remove-audio-btn:hover { opacity: 1; color: var(--errorColor); }

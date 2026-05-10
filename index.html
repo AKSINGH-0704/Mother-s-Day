@@ -101,6 +101,20 @@
           <textarea class="form-textarea large-textarea" id="final-message" maxlength="800" placeholder="A memory, a thank you, something she always says..."></textarea>
           <span class="char-count" id="message-count">0/800</span>
         </div>
+
+        <!-- Audio Upload -->
+        <div class="form-group audio-section">
+          <label class="form-label">🎵 Add a Song or Voice Note <span class="optional">(Optional)</span></label>
+          <p class="audio-hint">Plays softly from the very first bloom she opens — loops gently throughout.</p>
+          <div class="audio-upload-area" id="audio-upload-area">
+            <label class="upload-btn audio-upload-btn" id="audio-upload-label">
+              Choose Audio File
+              <input type="file" id="audio-file-input" accept="audio/*" style="display:none">
+            </label>
+            <div id="audio-selected-info" class="hidden audio-selected-info"></div>
+          </div>
+        </div>
+
         <div class="screen-nav">
           <button class="btn btn-back" id="btn-message-back">&larr; Back</button>
           <button class="btn btn-primary" id="btn-message-preview">Ready to Preview! &rarr;</button>
