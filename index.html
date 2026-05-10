@@ -2,14 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Create beautiful personalized surprise messages with balloon pop reveals">
-  <meta property="og:title" content="✨ A Special Surprise for You!">
-  <meta property="og:description" content="Pop the balloons to reveal your special messages!">
-  <title>✨ Surprise Creator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="A cinematic, emotional Mother's Day memory experience.">
+  <meta name="theme-color" content="#FFF7F3">
+  
+  <meta property="og:title" content="🌸 A Mother's Day Surprise for You">
+  <meta property="og:description" content="Someone who loves you made this for you.">
+  <meta property="og:image" content="/og-preview.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  <title>🌸 Mother's Day Surprise</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Pacifico&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600;700;800&family=Merriweather:ital,wght@0,300;0,400;1,300&family=Poppins:wght@300;400;500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Dancing+Script:wght@400;600&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -19,44 +28,62 @@
 
   <!-- ==================== CREATOR FLOW ==================== -->
 
+  <!-- Screen 0: Intro -->
+  <div class="screen active" id="screen-intro">
+    <div class="screen-inner intro-inner">
+      <div class="intro-quote">"Some people make the world softer just by being in it."</div>
+      <div class="gold-divider"></div>
+      <button class="btn btn-primary btn-fade-up" id="btn-intro-continue">Create her surprise &rarr;</button>
+    </div>
+  </div>
+
   <!-- Screen 1: Setup -->
-  <div class="screen" id="screen-setup">
+  <div class="screen hidden" id="screen-setup">
     <div class="screen-inner">
       <div class="screen-header">
-        <h1 class="display-title" id="setup-title">Craft your Surprise! <span id="setup-icon">🎉</span></h1>
-        <p class="display-subtitle">Create a personalized celebration experience</p>
+        <h1 class="display-title" id="setup-title">Create a surprise for someone extraordinary</h1>
+        <p class="display-subtitle">She deserves to feel remembered.</p>
       </div>
       <div class="card setup-card">
         <div class="form-group">
-          <label class="form-label">Who is this surprise for?</label>
-          <div class="input-wrapper">
-            <input type="text" class="form-input" id="recipient-name" placeholder="Enter their name..." maxlength="40" autocomplete="off">
+          <label class="form-label">What do you call her?</label>
+          <div class="relationship-grid" id="relationship-grid">
+            <div class="rel-card selected" data-rel="Mom">Mom</div>
+            <div class="rel-card" data-rel="Mum">Mum</div>
+            <div class="rel-card" data-rel="Mama">Mama</div>
+            <div class="rel-card" data-rel="Grandma">Grandma</div>
+            <div class="rel-card" data-rel="Nana">Nana</div>
+            <div class="rel-card" data-rel="Mother Figure">Mother Figure</div>
           </div>
-          <span class="char-count" id="name-count">0/40</span>
         </div>
         <div class="form-group">
-          <label class="form-label">What's the occasion?</label>
-          <div class="occasion-grid" id="occasion-grid"></div>
+          <label class="form-label">What is her name? <span class="optional">(Optional)</span></label>
+          <div class="input-wrapper">
+            <input type="text" class="form-input" id="recipient-name" placeholder="Enter her name..." maxlength="40" autocomplete="off">
+          </div>
         </div>
-        <button class="btn btn-primary" id="btn-setup-continue" disabled>Continue <span>✨</span></button>
+        <div class="screen-nav">
+          <button class="btn btn-back" id="btn-setup-back">&larr; Back</button>
+          <button class="btn btn-primary" id="btn-setup-continue">Continue &rarr;</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Screen 2: Balloon Editor -->
+  <!-- Screen 2: Memory Editor -->
   <div class="screen hidden" id="screen-balloons">
     <div class="screen-inner screen-inner--wide">
       <div class="screen-header">
-        <h1 class="display-title" id="balloons-title">Craft your Surprise <span>🎈</span></h1>
-        <p class="display-subtitle" id="balloons-subtitle">Add 3–9 surprise messages. Each balloon reveals one when popped!</p>
+        <h1 class="display-title" id="balloons-title">Hide a memory inside each bloom 🌸</h1>
+        <p class="display-subtitle" id="balloons-subtitle">Each bloom holds one piece of your heart.</p>
       </div>
       <div class="balloons-container">
         <div class="balloon-cards-list" id="balloon-cards-list"></div>
-        <button class="btn btn-add-balloon" id="btn-add-balloon">+ Add Balloon</button>
+        <button class="btn btn-add-balloon" id="btn-add-balloon">+ Add Memory</button>
       </div>
       <div class="screen-nav">
-        <button class="btn btn-back" id="btn-balloons-back">← Back</button>
-        <button class="btn btn-primary" id="btn-balloons-continue">Continue ✨</button>
+        <button class="btn btn-back" id="btn-balloons-back">&larr; Back</button>
+        <button class="btn btn-primary" id="btn-balloons-continue">Continue &rarr;</button>
       </div>
     </div>
   </div>
@@ -65,18 +92,18 @@
   <div class="screen hidden" id="screen-message">
     <div class="screen-inner">
       <div class="screen-header">
-        <h1 class="display-title">Final Celebration Message <span>🎉</span></h1>
-        <p class="display-subtitle" id="message-subtitle">This message appears after all balloons are popped — feel free to customize it!</p>
+        <h1 class="display-title">Your heartfelt note to her 💌</h1>
+        <p class="display-subtitle" id="message-subtitle">This appears last — make it count.</p>
       </div>
       <div class="card">
         <div class="form-group">
           <label class="form-label">Your Final Celebration Message:</label>
-          <textarea class="form-textarea large-textarea" id="final-message" maxlength="800" placeholder="Write your heartfelt final message here... e.g. 'You mean the world to me and I hope this day makes you feel exactly how special you are. 💕'"></textarea>
+          <textarea class="form-textarea large-textarea" id="final-message" maxlength="800" placeholder="A memory, a thank you, something she always says..."></textarea>
           <span class="char-count" id="message-count">0/800</span>
         </div>
         <div class="screen-nav">
-          <button class="btn btn-back" id="btn-message-back">← Back</button>
-          <button class="btn btn-primary" id="btn-message-preview">Ready to Preview! →</button>
+          <button class="btn btn-back" id="btn-message-back">&larr; Back</button>
+          <button class="btn btn-primary" id="btn-message-preview">Ready to Preview! &rarr;</button>
         </div>
       </div>
     </div>
@@ -86,26 +113,26 @@
   <div class="screen hidden" id="screen-deploy">
     <div class="screen-inner">
       <div class="screen-header">
-        <h1 class="display-title">Your Surprise is Ready! <span>🚀</span></h1>
-        <p class="display-subtitle">Share this magical experience with your special someone</p>
+        <h1 class="display-title">Your Surprise is Ready 🌸</h1>
+        <p class="display-subtitle">Share this magical experience with her.</p>
       </div>
       <div class="card deploy-card">
         <div class="deploy-section">
           <div class="deploy-badge">✨ Shareable Link Ready</div>
           <div class="link-container">
             <input type="text" class="link-input" id="share-link" readonly placeholder="Generating your link...">
-            <button class="btn btn-copy" id="btn-copy-link"><span id="copy-icon">📋</span> Copy</button>
+          </div>
+          <div class="share-actions">
+            <button class="btn btn-copy" id="btn-copy-link"><span id="copy-icon">📋</span> Copy Link</button>
+            <button class="btn btn-whatsapp" id="btn-whatsapp-share">Share on WhatsApp</button>
+            <button class="btn btn-native-share" id="btn-native-share">Share...</button>
           </div>
           <div class="deploy-stats" id="deploy-stats"></div>
-        </div>
-        <div class="deploy-instructions">
-          <div class="instruction-step"><span class="step-num">1</span><span>Copy the link above</span></div>
-          <div class="instruction-step"><span class="step-num">2</span><span>Share via WhatsApp, Instagram, or any app</span></div>
-          <div class="instruction-step"><span class="step-num">3</span><span>They'll see the magic unfold! ✨</span></div>
+          <p class="expiry-notice">Link expires in 180 days.</p>
         </div>
         <div class="deploy-actions">
-          <button class="btn btn-back" id="btn-deploy-back">← Edit</button>
-          <button class="btn btn-preview-exp" id="btn-deploy-preview">Preview Experience →</button>
+          <button class="btn btn-back" id="btn-deploy-back">&larr; Edit</button>
+          <button class="btn btn-preview-exp" id="btn-deploy-preview">Preview Experience &rarr;</button>
         </div>
       </div>
     </div>
@@ -117,23 +144,20 @@
   <div class="screen hidden" id="screen-welcome">
     <div class="screen-inner welcome-inner">
       <div class="welcome-content">
-        <div class="welcome-greeting" id="welcome-greeting">Happy Women's Day</div>
-        <h1 class="welcome-name" id="welcome-name">Prema ✨</h1>
-        <div class="profile-circle-container">
-          <div class="profile-circle" id="profile-circle"></div>
-        </div>
-        <div class="welcome-queen-title" id="welcome-queen-title">You're a Queen 👑</div>
-        <p class="welcome-subtext" id="welcome-subtext">I've prepared something special for you. Pop all the balloons on the next screen to uncover! 🎈</p>
-        <button class="btn btn-magic" id="btn-start-magic">Start the Magic ✨</button>
+        <div class="welcome-greeting" id="welcome-greeting">Happy Mother's Day</div>
+        <h1 class="welcome-name" id="welcome-name"></h1>
+        <div class="welcome-queen-title" id="welcome-queen-title">You have a Mother’s Day surprise 🌸</div>
+        <p class="welcome-subtext" id="welcome-subtext">Someone who loves you made this for you.</p>
+        <button class="btn btn-magic" id="btn-start-magic">Begin your surprise &rarr;</button>
       </div>
     </div>
   </div>
 
-  <!-- Screen 6: Pop Balloons -->
+  <!-- Screen 6: Pop Blooms -->
   <div class="screen hidden" id="screen-pop">
     <div class="pop-header">
-      <h2 class="pop-title" id="pop-title">Pop the balloons!</h2>
-      <p class="pop-counter" id="pop-counter">6 surprises remaining</p>
+      <h2 class="pop-title" id="pop-title">Open the blooms to reveal your memories 💝</h2>
+      <p class="pop-counter" id="pop-counter">Take your time. Each one holds something real.</p>
     </div>
     <div class="balloons-stage" id="balloons-stage"></div>
   </div>
@@ -142,38 +166,44 @@
   <div class="screen hidden" id="screen-reveal">
     <div class="reveal-wrapper">
       <div class="reveal-top">
-        <div class="reveal-greeting" id="reveal-greeting"></div>
+        <div class="reveal-greeting" id="reveal-greeting">Happy Mother's Day</div>
         <h1 class="reveal-name" id="reveal-name"></h1>
+        <div class="gold-divider"></div>
       </div>
       <div class="reveal-card" id="reveal-card">
         <p class="reveal-text" id="reveal-text"></p>
       </div>
-      <div class="reveal-signature" id="reveal-signature">— With all my love 💕</div>
+      <div class="reveal-signature" id="reveal-signature">— With all our love</div>
     </div>
   </div>
 
   <!-- ==================== MODALS ==================== -->
 
-  <!-- Balloon Pop Reveal Modal -->
+  <!-- Bloom Reveal Modal -->
   <div class="modal-overlay hidden" id="balloon-modal">
     <div class="balloon-reveal-card">
-      <button class="modal-close-btn" id="modal-close">✕</button>
       <div class="reveal-photo-area" id="reveal-photo-area"></div>
-      <p class="reveal-balloon-msg" id="reveal-balloon-msg"></p>
-      <button class="btn btn-got-it" id="btn-modal-next">Next 💕</button>
+      <p class="reveal-balloon-msg typewriter" id="reveal-balloon-msg"></p>
+      <div class="gold-underline hidden" id="reveal-underline"></div>
+      <button class="btn btn-got-it hidden" id="btn-modal-next">Continue &rarr;</button>
     </div>
   </div>
 
-  <!-- Confetti Container -->
-  <div id="confetti-container" aria-hidden="true"></div>
+  <!-- Loading overlay -->
+  <div id="loading-overlay" class="hidden">
+    <div class="loading-box">
+      <div class="loading-bloom">🌸</div>
+      <p class="loading-text">Preparing your memories...</p>
+      <p class="loading-sub" id="loading-error"></p>
+    </div>
+  </div>
 
-  <!-- Preview Banner (creator previewing recipient experience) -->
+  <!-- Preview Banner -->
   <div class="preview-banner hidden" id="preview-banner">
-    <span>🔍 Preview Mode: this is what the recipient will see</span>
+    <span>🔍 Preview Mode: this is what she will see</span>
     <button class="btn-edit-banner" id="btn-edit-surprise">Edit Surprise</button>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

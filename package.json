@@ -5,5 +5,9 @@
   "scripts": {
     "start": "npx serve ."
   },
+  "dependencies": {
+    "@vercel/blob": "^2.3.3",
+    "@vercel/kv": "^1.0.0"
+  },
   "license": "MIT"
 }
