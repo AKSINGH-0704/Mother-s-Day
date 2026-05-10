@@ -107,11 +107,32 @@ function playSoftChime(){
   }catch(e){}
 }
 function startPersonalAudio(){
-  if(!state.personalAudio)return;
+  if(!state.personalAudio||!state.audioReady)return;
   fadeOutAmbient();
-  state.personalAudio.loop=true;state.personalAudio.volume=0;
-  state.personalAudio.play().catch(()=>{});
-  let v=0;const iv=setInterval(()=>{v=Math.min(v+.04,.85);state.personalAudio.volume=v;if(v>=.85)clearInterval(iv);},120);
+  state.personalAudio.loop=true;
+  state.personalAudio.currentTime=0;
+  // volume starts at 0, fade in
+  state.personalAudio.volume=0;
+  const playPromise=state.personalAudio.play();
+  if(playPromise!==undefined){
+    playPromise.then(()=>{
+      let v=0;
+      const iv=setInterval(()=>{v=Math.min(v+.04,.85);state.personalAudio.volume=v;if(v>=.85)clearInterval(iv);},120);
+    }).catch(err=>{
+      // Autoplay blocked — attach a one-time click handler on the entire page to retry
+      console.warn('Autoplay blocked, will retry on next tap:',err.name);
+      const retry=()=>{
+        state.personalAudio.play().then(()=>{
+          let v=0;
+          const iv=setInterval(()=>{v=Math.min(v+.04,.85);state.personalAudio.volume=v;if(v>=.85)clearInterval(iv);},120);
+        }).catch(()=>{});
+        document.removeEventListener('click',retry);
+        document.removeEventListener('touchstart',retry);
+      };
+      document.addEventListener('click',retry,{once:true});
+      document.addEventListener('touchstart',retry,{once:true});
+    });
+  }
 }
 function stopAllAudio(){
   if(state.ambientGain)state.ambientGain.gain.value=0;
@@ -297,7 +318,9 @@ function initDeployScreen(){
   document.getElementById('btn-deploy-preview').onclick=()=>{
     document.getElementById('preview-banner').classList.remove('hidden');
     if(state.audioData&&!state.shareData.audioUrl){
-      const audio=new Audio(state.audioData);audio.loop=true;state.personalAudio=audio;
+      const audio=new Audio(state.audioData);audio.loop=true;
+      state.personalAudio=audio;
+      state.audioReady=true;
     }
     beginRecipientFlow(state.shareData);
   };
@@ -431,8 +454,35 @@ async function beginRecipientFlow(data){
   document.getElementById('welcome-name').textContent=data.name||data.relationship||'Mom';
 
   if(data.audioUrl&&!state.personalAudio){
-    const audio=new Audio();audio.preload='auto';audio.loop=true;state.personalAudio=audio;
-    await new Promise(res=>{audio.oncanplaythrough=res;audio.onerror=res;setTimeout(res,2500);audio.src=data.audioUrl;});
+    state.audioReady=false;
+    const audio=new Audio();
+    audio.loop=true;
+    audio.preload='auto';
+
+    // Load with CORS first; if that errors, retry without
+    const loadAudio=(useCors)=>new Promise(res=>{
+      audio.oncanplaythrough=()=>{state.audioReady=true;res();};
+      audio.onerror=()=>{
+        if(useCors){
+          // strip crossOrigin and retry without CORS
+          audio.crossOrigin=null;
+          audio.load();
+          loadAudio(false).then(res);
+        } else {
+          console.warn('Audio failed to load from URL:',data.audioUrl);
+          res(); // continue without audio
+        }
+      };
+      setTimeout(()=>res(),4000); // 4-second failsafe
+      if(useCors) audio.crossOrigin='anonymous';
+      audio.src=data.audioUrl;
+      audio.load();
+    });
+
+    state.personalAudio=audio;
+    await loadAudio(true);
+  } else {
+    state.audioReady=!!(state.personalAudio); // preview mode: audio already set
   }
 
   const imgLoads=balloons.filter(b=>b.imageUrl).map(b=>new Promise(res=>{const i=new Image();i.onload=res;i.onerror=res;i.src=b.imageUrl;}));
