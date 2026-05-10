@@ -20,6 +20,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Dancing+Script:wght@400;600&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
 </head>
 <body>
 
@@ -77,6 +78,25 @@
         <h1 class="display-title" id="balloons-title">Hide a memory inside each bloom 🌸</h1>
         <p class="display-subtitle" id="balloons-subtitle">Each bloom holds one piece of your heart.</p>
       </div>
+      <!-- Prominent Audio Upload Card -->
+      <div class="audio-card" id="audio-card">
+        <div class="audio-card-inner">
+          <div class="audio-card-icon">🎵</div>
+          <div class="audio-card-text">
+            <strong>Add Background Music or Voice Note</strong>
+            <span>Plays softly while she opens every memory — loops if short</span>
+          </div>
+          <label class="btn btn-add-audio" id="btn-add-audio-label">
+            Choose Audio
+            <input type="file" id="audio-file-input" accept="audio/*" style="display:none">
+          </label>
+        </div>
+        <div id="audio-selected-info" class="hidden audio-selected-row">
+          <span class="audio-file-name" id="audio-file-name"></span>
+          <button class="remove-audio-btn" id="btn-remove-audio">&times; Remove</button>
+        </div>
+      </div>
+
       <div class="balloons-container">
         <div class="balloon-cards-list" id="balloon-cards-list"></div>
         <button class="btn btn-add-balloon" id="btn-add-balloon">+ Add Memory</button>
@@ -101,20 +121,6 @@
           <textarea class="form-textarea large-textarea" id="final-message" maxlength="800" placeholder="A memory, a thank you, something she always says..."></textarea>
           <span class="char-count" id="message-count">0/800</span>
         </div>
-
-        <!-- Audio Upload -->
-        <div class="form-group audio-section">
-          <label class="form-label">🎵 Add a Song or Voice Note <span class="optional">(Optional)</span></label>
-          <p class="audio-hint">Plays softly from the very first bloom she opens — loops gently throughout.</p>
-          <div class="audio-upload-area" id="audio-upload-area">
-            <label class="upload-btn audio-upload-btn" id="audio-upload-label">
-              Choose Audio File
-              <input type="file" id="audio-file-input" accept="audio/*" style="display:none">
-            </label>
-            <div id="audio-selected-info" class="hidden audio-selected-info"></div>
-          </div>
-        </div>
-
         <div class="screen-nav">
           <button class="btn btn-back" id="btn-message-back">&larr; Back</button>
           <button class="btn btn-primary" id="btn-message-preview">Ready to Preview! &rarr;</button>
