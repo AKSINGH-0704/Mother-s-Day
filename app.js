@@ -335,28 +335,62 @@ async function generateShareLink(linkInput){
   const setNote=(msg,err)=>{if(!note)return;note.textContent=msg;note.style.color=err?'#b55':'rgba(100,70,80,0.7)';note.style.display=msg?'block':'none';};
   setNote('');
 
-  // ── Step 1: Try cloud (Blob + KV) ───────────────────────────────────
-  let cloudLink=null;
-  try{
+  // ── Step 1: Upload images (with free-host fallback) ─────────────────
+  const imagesWithData=state.shareData.balloons.filter(b=>b.imageUrl&&b.imageUrl.startsWith('data:'));
+  if(imagesWithData.length>0){
+    linkInput.value=`Uploading ${imagesWithData.length} photo(s)…`;
+    let uploaded=0;
     for(const b of state.shareData.balloons){
-      if(b.imageUrl&&b.imageUrl.startsWith('data:')){
-        try{
-          const r=await fetch('/api/upload',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({imageBase64:b.imageUrl})});
-          if(r.ok)b.imageUrl=(await r.json()).url;
-        }catch(e){}
+      if(!b.imageUrl||!b.imageUrl.startsWith('data:'))continue;
+      try{
+        const r=await fetch('/api/upload',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({imageBase64:b.imageUrl})
+        });
+        if(r.ok){
+          const json=await r.json();
+          if(json.url&&json.url.startsWith('https://')){
+            b.imageUrl=json.url;
+            uploaded++;
+          }
+        } else {
+          console.warn('Image upload returned',r.status,'- photo will be excluded from link');
+        }
+      }catch(e){
+        console.warn('Image upload fetch failed:',e.message);
       }
     }
-    if(state.audioData&&!state.audioUrl){
-      try{
-        linkInput.value='Uploading your audio…';
-        const r=await fetch('/api/upload-audio',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({audioBase64:state.audioData})});
-        if(r.ok){state.audioUrl=(await r.json()).url;state.shareData.audioUrl=state.audioUrl;}
-      }catch(e){}
-    }
+    console.log(`Photos: ${uploaded}/${imagesWithData.length} uploaded successfully`);
+  }
+
+  // ── Step 2: Upload audio (with free-host fallback) ───────────────────
+  if(state.audioData&&!state.audioUrl){
+    try{
+      linkInput.value='Uploading your audio…';
+      const r=await fetch('/api/upload-audio',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({audioBase64:state.audioData})
+      });
+      if(r.ok){
+        const json=await r.json();
+        if(json.url){state.audioUrl=json.url;state.shareData.audioUrl=state.audioUrl;}
+      }
+    }catch(e){console.warn('Audio upload failed:',e.message);}
+  }
+
+  // ── Step 3: Try cloud KV save (short clean link) ─────────────────────
+  let cloudLink=null;
+  try{
     linkInput.value='Saving your surprise…';
-    const resp=await fetch('/api/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(state.shareData)});
+    const resp=await fetch('/api/save',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(state.shareData)
+    });
     if(resp.ok){const{id}=await resp.json();cloudLink=`${location.origin}${location.pathname}?s=${id}`;}
-  }catch(e){}
+  }catch(e){console.warn('KV save failed:',e.message);}
 
   if(cloudLink){
     linkInput.value=cloudLink;wireShareButtons(cloudLink);
@@ -364,7 +398,7 @@ async function generateShareLink(linkInput){
     return;
   }
 
-  // ── Step 2: Inline LZ-String fallback — TEXT ONLY, no base64 images ─
+  // ── Step 4: Inline LZ-String fallback (images only if hosted https://) ─
   linkInput.value='Building your link…';
   try{
     const payload={
@@ -372,12 +406,13 @@ async function generateShareLink(linkInput){
       name:state.shareData.name,
       finalMessage:state.shareData.finalMessage,
       audioUrl:state.audioUrl||null,
-      // NEVER include base64 images — only already-hosted https:// URLs
       balloons:state.shareData.balloons.map(b=>({
         message:b.message,
+        // Include image ONLY if it was successfully uploaded to an https:// URL
         imageUrl:(b.imageUrl&&b.imageUrl.startsWith('https://'))?b.imageUrl:null
       }))
     };
+
     const compressed=LZString.compressToEncodedURIComponent(JSON.stringify(payload));
     const inlineLink=`${location.origin}${location.pathname}?d=${compressed}`;
 
@@ -390,10 +425,15 @@ async function generateShareLink(linkInput){
     linkInput.value=inlineLink;
     wireShareButtons(inlineLink);
 
-    const hadLocalImages=state.shareData.balloons.some(b=>b.imageUrl&&b.imageUrl.startsWith('data:'));
-    setNote(hadLocalImages
-      ?'⚠️ Photos could not be included (cloud unavailable). Your memories & message are preserved.'
-      :'Link ready — share away! 🌸');
+    const photosIncluded=payload.balloons.filter(b=>b.imageUrl).length;
+    const photosTotal=state.shareData.balloons.filter(b=>b.imageUrl).length;
+    if(photosTotal>0&&photosIncluded<photosTotal){
+      setNote(`⚠️ ${photosIncluded}/${photosTotal} photos included (some uploads failed). Messages fully preserved.`);
+    } else if(photosTotal===0){
+      setNote('Link ready — share away! 🌸');
+    } else {
+      setNote(`Link ready — ${photosIncluded} photo(s) & message included 🌸`);
+    }
   }catch(e){
     linkInput.value='Could not generate link. Please check your connection.';
   }
