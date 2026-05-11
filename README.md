@@ -5,7 +5,7 @@
 <br/>
 
 ![Made with Love](https://img.shields.io/badge/Made%20with-%E2%9D%A4%EF%B8%8F-C08497?style=for-the-badge)
-![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)
+![Railway](https://img.shields.io/badge/Deployed%20on-Railway-131415?style=for-the-badge&logo=railway)
 ![JavaScript](https://img.shields.io/badge/Vanilla%20JS-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![No Framework](https://img.shields.io/badge/No%20Framework-Zero%20Dependencies-C08497?style=for-the-badge)
 
@@ -28,7 +28,7 @@ Most Mother's Day gifts feel like an afterthought. This is the opposite.
 
 You build a private, shareable experience in minutes. She opens a link on her phone, taps through hand-placed memory blooms, reads your words one by one, and arrives at a final personal message with ambient piano playing underneath. No app install. No account. Just a link that feels like it took days to make.
 
-It's an emotional web experience built entirely with vanilla JavaScript, a Vercel serverless backend, and a design philosophy that chose restraint over spectacle.
+It's an emotional web experience built entirely with vanilla JavaScript, a Railway Node.js/Express backend, and a design philosophy that chose restraint over spectacle.
 
 <br/>
 
@@ -61,14 +61,16 @@ project/
 ├── index.html          # Single page app, all screens in one file
 ├── style.css           # Full design system, glassmorphism, motion tokens
 ├── app.js              # Complete client logic, audio engine, state machine
-├── api/
-│   ├── save.js         # Vercel serverless — validates + stores to KV
-│   ├── load.js         # Vercel serverless — retrieves + serves surprise
-│   └── upload.js       # Vercel serverless — uploads images to Vercel Blob
-└── vercel.json         # Routing + API configuration
+├── api/                # API routes for saving, loading, and uploading media
+│   ├── save.js         
+│   ├── load.js         
+│   ├── upload.js       
+│   └── upload-audio.js 
+├── server.js           # Express.js backend entry point for Railway
+└── package.json        # Node dependencies and start scripts
 ```
 
-**No build step. No bundler. No framework. Just files.**
+**No build step. No bundler. No frontend framework. Just files and a simple Express server.**
 
 <br/>
 
@@ -156,14 +158,12 @@ npx serve .
 
 > Note: API endpoints (`/api/save`, `/api/load`, `/api/upload`) require Vercel to run. Use the "Preview Experience" button locally to test the full recipient flow without a backend.
 
-### Deploy to Vercel
+### Deploy to Railway
 
-```bash
-npm i -g vercel
-vercel
-```
-
-Set the following environment variables in your Vercel dashboard:
+1. Push your repository to GitHub.
+2. Go to [Railway](https://railway.app), click **New Project** → **Deploy from GitHub repo**.
+3. Railway will automatically detect the Node.js environment and `server.js`.
+4. (Optional) Set the following environment variables in your Railway dashboard for permanent Vercel Blob/KV storage instead of the free, temporary fallbacks:
 
 ```
 KV_REST_API_URL       # From your Vercel KV store
@@ -190,11 +190,11 @@ Recommended: 20 to 45 seconds. Your voice, or piano underneath your voice. No fu
 | Frontend | Vanilla HTML, CSS, JavaScript (ES2020+) |
 | Animations | Web Animations API + Canvas 2D |
 | Audio | Web Audio API + HTML5 Audio |
-| Backend | Vercel Serverless Functions (Node.js) |
+| Backend | Node.js + Express (server.js) |
 | Database | Vercel KV (Redis) |
-| Image Storage | Vercel Blob |
+| Media Storage | Vercel Blob (Fallback to 0x0.st / catbox.moe) |
 | Fonts | Google Fonts (Cormorant Garamond, Dancing Script, Nunito) |
-| Deployment | Vercel |
+| Deployment | Railway |
 
 <br/>
 
